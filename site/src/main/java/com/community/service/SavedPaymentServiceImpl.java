@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+import se.kth.chaos.annotations.ChaosMachinePerturbationPoint;
+import se.kth.chaos.annotations.Hypothesis;
+
 /**
  * @author Chris Kittrell (ckittrell)
  */
@@ -48,7 +51,7 @@ public class SavedPaymentServiceImpl implements SavedPaymentService {
 
                 return customerPaymentGatewayService.createCustomerPaymentFromResponseDTO(responseDTO, configuration);
             }
-        } catch (PaymentException e) {
+        } catch (@ChaosMachinePerturbationPoint(hypothesis = Hypothesis.RESILIENT) PaymentException e) {
             LOG.error("Could not create gateway customer", e);
         }
         return null;
@@ -66,7 +69,7 @@ public class SavedPaymentServiceImpl implements SavedPaymentService {
 
                 return customerPaymentGatewayService.updateCustomerPaymentFromResponseDTO(responseDTO, configuration);
             }
-        } catch (PaymentException e) {
+        } catch (@ChaosMachinePerturbationPoint(hypothesis = {Hypothesis.DEBUG, Hypothesis.OBSERVABLE}) PaymentException e) {
             LOG.error("Could not create gateway customer", e);
         }
         return null;
